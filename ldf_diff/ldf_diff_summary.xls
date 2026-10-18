@@ -1,0 +1,57 @@
+<html><head><meta charset='UTF-8'><style>
+table{border-collapse:collapse; font-family:'Segoe UI',sans-serif; font-size:13px;}
+th,td{border:1px solid #d0d7de; padding:6px 12px; text-align:left;}
+th{background-color:#24292E; color:#ffffff; font-weight:bold;}
+.bg-even{background-color:#F6F8FA;}
+.bdg-add{background-color:#DAFBE1; color:#1A7F37; font-weight:bold; text-align:center;}
+.bdg-rem{background-color:#FFEBE9; color:#CF222E; font-weight:bold; text-align:center;}
+.bdg-mod{background-color:#FFF8E7; color:#953800; font-weight:bold; text-align:center;}
+</style></head><body>
+<table><thead><tr><th>CATEGORY</th><th>ELEMENT TARGET</th><th>EVENT STATUS</th><th>CHANGELOG CONFIGURATION DETAILS</th></tr></thead><tbody>
+<tr><td>Node</td><td><b>USP_1</b></td><td class='bdg-add'>ADDED</td><td>Slave node mapped to network cluster architecture definitions.</td></tr>
+<tr class='bg-even'><td>Node</td><td><b>BMS</b></td><td class='bdg-rem'>REMOVED</td><td>Slave node dropped from cluster topology specifications.</td></tr>
+<tr><td>Node</td><td><b>BMS2</b></td><td class='bdg-rem'>REMOVED</td><td>Slave node dropped from cluster topology specifications.</td></tr>
+<tr class='bg-even'><td>Node</td><td><b>UCIM_UCIM2</b></td><td class='bdg-rem'>REMOVED</td><td>Slave node dropped from cluster topology specifications.</td></tr>
+<tr><td>Frame</td><td><b>CIM_1</b></td><td class='bdg-add'>ADDED</td><td>ID: 1 | Payload Length: 6 Bytes</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>USP1PartNum</b></td><td class='bdg-add'>ADDED</td><td>ID: 6 | Payload Length: 8 Bytes</td></tr>
+<tr><td>Frame</td><td><b>USP1SerialNum</b></td><td class='bdg-add'>ADDED</td><td>ID: 7 | Payload Length: 8 Bytes</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>USP_1</b></td><td class='bdg-add'>ADDED</td><td>ID: 0 | Payload Length: 8 Bytes</td></tr>
+<tr><td>Frame</td><td><b>BCM_D_BMS2_FrP12</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BCM_D_BMS2_FrP13</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BCM_D_BMS2_FrP14</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BCM_D_BMS2_FrP15</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BCM_D_FrP12</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BCM_D_FrP13</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BCM_D_FrP14</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BCM_D_FrP15</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS2_D_FrP00</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS2_D_FrP01</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS2_D_FrP02</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS2_D_FrP03</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS2_D_FrP04</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS2_D_FrP05</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS2_D_FrP06</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS2_D_FrP07</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS2_D_FrP08</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS2_D_FrP09</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS2_D_FrP10</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS2_D_FrP11</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS2_D_FrP12</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS_D_FrASIL_001</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS_D_FrASIL_002</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS_D_FrP00</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS_D_FrP01</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS_D_FrP02</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS_D_FrP03</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS_D_FrP04</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS_D_FrP05</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS_D_FrP06</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS_D_FrP07</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS_D_FrP08</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS_D_FrP09</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS_D_FrP10</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>BMS_D_FrP11</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>BMS_D_FrP12</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>CIM_SOFT_INPUT</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr class='bg-even'><td>Frame</td><td><b>SFB_STATUS</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
+<tr><td>Frame</td><td><b>Slave_Error_Response_UCIM_UCIM2</b></td><td class='bdg-rem'>REMOVED</td><td>Frame baseline identifier dropped from data layout matrix.</td></tr>
