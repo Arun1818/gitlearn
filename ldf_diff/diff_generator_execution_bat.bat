@@ -1,1 +1,1 @@
-python ldf_diff_v2.py -old <add old ldf name.ldf> -new <add new ldf name.ldf>
+python ldf_difference_finder.py -old <add old ldf name.ldf> -new <add new ldf name.ldf>
