@@ -1,1 +1,1 @@
-python ldf_diff_v2.py -old SFB_BMS2-5682.ldf -new Upfitter-6x_LIN_20260722_v1.0.0.ldf
+python ldf_diff_v2.py -old <add old ldf name.ldf> -new <add new ldf name.ldf>
