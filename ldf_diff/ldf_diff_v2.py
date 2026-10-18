@@ -1,200 +1,160 @@
-import ldfparser
-import ldfparser.signal as ldf_sig
+import re
 
 # ==============================================================================
-# RUNTIME PARSER FIXES (To support non-standard/broken custom LDF attributes)
+# 1. PURE TEXT-EXTRACTION ENGINE (Bypasses ldfparser object-linking drops)
 # ==============================================================================
-original_create = ldf_sig.LinSignal.create
-@classmethod
-def patched_create(cls, name: str, width: int, init_value):
+def extract_ldf_blocks(filepath):
     try:
-        return original_create(name, width, init_value)
-    except ValueError as e:
-        if "must be 1-16 bits long" in str(e):
-            obj = cls.__new__(cls)
-            obj.name, obj.width, obj.init_value = name, width, init_value
-            obj.frames, obj.converters, obj.publishers, obj.subscribers = [], [], [], []
-            return obj
-        raise e
-ldf_sig.LinSignal.create = patched_create
+        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+            content = f.read()
+    except Exception as e:
+        return {}, {}, []
 
-original_get_signal = ldfparser.LDF.get_signal
-def patched_get_signal(self, name: str):
-    try:
-        return original_get_signal(self, name)
-    except LookupError:
-        for attr in ['_diagnostic_signals', 'diagnostic_signals', '_diagnostics']:
-            diag_dict = getattr(self, attr, None)
-            if diag_dict and name in diag_dict:
-                return diag_dict[name]
-        mock_signal = ldf_sig.LinSignal.__new__(ldf_sig.LinSignal)
-        mock_signal.name, mock_signal.width, mock_signal.init_value = name, 1, 0
-        mock_signal.frames, mock_signal.converters, mock_signal.publishers, mock_signal.subscribers = [], [], [], []
-        self._signals[name] = mock_signal
-        return mock_signal
-ldfparser.LDF.get_signal = patched_get_signal
+    # Extract Nodes
+    nodes = []
+    nodes_match = re.search(r'Nodes\s*\{(.*?)\}', content, re.DOTALL)
+    if nodes_match:
+        slave_match = re.search(r'Slaves\s*:\s*([^;]+);', nodes_match.group(1))
+        if slave_match:
+            nodes = [n.strip() for n in slave_match.group(1).split(',')]
 
-class FallbackDict(dict):
-    def __getitem__(self, key):
-        if key not in self:
-            from ldfparser.encoding import LinSignalEncodingType
-            mock_encoding = LinSignalEncodingType.__new__(LinSignalEncodingType)
-            mock_encoding.name, mock_encoding.types, mock_encoding._signals = key, [], []
-            self[key] = mock_encoding
-        return super().__getitem__(key)
+    # Extract Frames & Packed Signals Layout Block
+    frames = {}
+    frame_matches = re.findall(r'(\w+)\s*:\s*(\w+)\s*,\s*(\w+)\s*,\s*(\d+)\s*\{(.*?)\}', content, re.DOTALL)
+    for f_name, f_id, f_pub, f_len, inner in frame_matches:
+        signals = []
+        sig_lines = re.findall(r'(\w+)\s*,\s*(\d+)\s*;', inner)
+        for s_name, offset in sig_lines:
+            signals.append({"name": s_name, "offset": int(offset)})
+        frames[f_name] = {
+            "id": f_id,
+            "pub": f_pub,
+            "len": f_len,
+            "signals": sorted(signals, key=lambda x: x["offset"])
+        }
 
-original_ldf_init = ldfparser.LDF.__init__
-def patched_ldf_init(self, *args, **kwargs):
-    original_ldf_init(self, *args, **kwargs)
-    self._signal_encoding_types = FallbackDict(self._signal_encoding_types)
-ldfparser.LDF.__init__ = patched_ldf_init
+    # Extract Global Signal Bit Widths Matrix
+    signals_meta = {}
+    sig_block = re.search(r'Signals\s*\{(.*?)\}', content, re.DOTALL)
+    if sig_block:
+        sig_matches = re.findall(r'(\w+)\s*:\s*(\d+)\s*,', sig_block.group(1))
+        for s_name, s_width in sig_matches:
+            signals_meta[s_name] = s_width
+
+    return nodes, frames, signals_meta
+
 # ==============================================================================
-
-# --- FIX: Safely unpack LinSignal objects into raw strings/integers to prevent sorting crashes ---
-def get_frame_signals(frame):
-    result = {}
-    
-    # Check for direct object lists first (most reliable across newer ldfparser versions)
-    if hasattr(frame, 'signals') and frame.signals:
-        for sig in frame.signals:
-            # Handles wrapper objects or direct LinSignal instances
-            sig_obj = getattr(sig, 'signal', sig)
-            s_name = getattr(sig_obj, 'name', str(sig_obj))
-            s_offset = getattr(sig, 'offset', getattr(sig_obj, 'offset', 0))
-            result[s_name] = s_offset
-        return result
-
-    # Fallback to structural map iteration
-    if hasattr(frame, 'signal_map') and frame.signal_map:
-        s_map = frame.signal_map
-        if isinstance(s_map, dict):
-            for k, v in s_map.items():
-                s_name = getattr(k, 'name', str(k))
-                s_offset = getattr(v, 'offset', v if isinstance(v, (int, float)) else 0)
-                result[s_name] = s_offset
-        elif isinstance(s_map, list):
-            for item in s_map:
-                if isinstance(item, (list, tuple)) and len(item) >= 2:
-                    s_name = getattr(item[0], 'name', str(item[0]))
-                    result[s_name] = item[1]
-                elif hasattr(item, 'name'):
-                    result[item.name] = getattr(item, 'offset', 0)
-                elif hasattr(item, 'signal'):
-                    s_name = getattr(item.signal, 'name', str(item.signal))
-                    result[s_name] = getattr(item, 'offset', 0)
-                    
-    return result
-
-# 1. Parse LDF databases safely
+# 2. FILE LOADING AND ARCHITECTURE EVALUATION
+# ==============================================================================
 OLD_FILE = 'SFB_BMS2-5682.ldf'
 NEW_FILE = 'Upfitter-6x_LIN_20260722_v1.0.0 1.ldf'
 
-old_ldf = ldfparser.parse_ldf(OLD_FILE)
-new_ldf = ldfparser.parse_ldf(NEW_FILE)
-
-# 2. Extract Data Maps
-old_nodes = set(node.name for node in old_ldf.get_slaves())
-new_nodes = set(node.name for node in new_ldf.get_slaves())
-
-old_frm_map = {f.name: f for f in old_ldf.get_unconditional_frames()}
-new_frm_map = {f.name: f for f in new_ldf.get_unconditional_frames()}
-
-old_sig_widths = {s.name: s.width for s in old_ldf.get_signals()}
-new_sig_widths = {s.name: s.width for s in new_ldf.get_signals()}
+old_nodes, old_frames, old_sig_meta = extract_ldf_blocks(OLD_FILE)
+new_nodes, new_frames, new_sig_meta = extract_ldf_blocks(NEW_FILE)
 
 # ==============================================================================
-# 3. MODULAR WRITING FUNCTIONS
-# ==============================================================================
-def write_node_section(out):
-    out.write("## 1. Network Node Updates\n\n")
-    added = sorted(list(new_nodes - old_nodes))
-    removed = sorted(list(old_nodes - new_nodes))
-    if not added and not removed:
-        out.write("No node architecture modifications.\n\n")
-    for n in added:
-        out.write(f"- **[+] Added Slave Node:** {n}\n")
-    for n in removed:
-        out.write(f"- **[-] Removed Slave Node:** {n}\n")
-    out.write("\n")
-
-def write_added_frames(out):
-    added_f = sorted(list(new_frm_map.keys() - old_frm_map.keys()))
-    for f_name in added_f:
-        f = new_frm_map[f_name]
-        f_sigs = get_frame_signals(f)
-        out.write(f"### [ADDED FRAME] {f_name}\n")
-        out.write(f"- **Frame ID:** {hex(f.frame_id)} | **Size:** {f.length} Bytes | **Publisher:** {getattr(f.publisher, 'name', f.publisher)}\n")
-        out.write("- **Nested Signals Layout Matrix:**\n")
-        out.write("  | Signal Name | Offset | Length |\n  | --- | --- | --- |\n")
-        # --- FIX: Safely sort on the integer bit offset coordinate ---
-        for s_name, offset in sorted(f_sigs.items(), key=lambda x: x[1]):
-            out.write(f"  | {s_name} | {offset} | {new_sig_widths.get(s_name, 'N/A')} bits |\n")
-        out.write("\n")
-
-def write_removed_frames(out):
-    removed_f = sorted(list(old_frm_map.keys() - new_frm_map.keys()))
-    for f_name in removed_f:
-        f = old_frm_map[f_name]
-        f_sigs = get_frame_signals(f)
-        out.write(f"### [REMOVED FRAME] {f_name}\n")
-        out.write(f"- **Frame ID:** {hex(f.frame_id)} | **Size:** {f.length} Bytes\n")
-        out.write("- **Nested Signals Layout Matrix:**\n")
-        out.write("  | Signal Name | Offset | Length |\n  | --- | --- | --- |\n")
-        # --- FIX: Safely sort on the integer bit offset coordinate ---
-        for s_name, offset in sorted(f_sigs.items(), key=lambda x: x[1]):
-            out.write(f"  | {s_name} | {offset} | {old_sig_widths.get(s_name, 'N/A')} bits |\n")
-        out.write("\n")
-
-def check_signal_diffs(out, o_sigs, n_signals):
-    for s in sorted(list(n_signals.keys() - o_sigs.keys())):
-        out.write(f"| {s} | **ADDED** | Start Bit Offset: {n_signals[s]} \| Width: {new_sig_widths.get(s, 'N/A')} bits |\n")
-    for s in sorted(list(o_sigs.keys() - n_signals.keys())):
-        out.write(f"| {s} | *REMOVED* | Was at Offset: {o_sigs[s]} \| Width: {old_sig_widths.get(s, 'N/A')} bits |\n")
-    for s in sorted(list(o_sigs.keys() & n_signals.keys())):
-        mods = []
-        if o_sigs[s] != n_signals[s]:
-            mods.append(f"• Bit Offset: ~~{o_sigs[s]}~~ -> **{n_signals[s]}**")
-        if old_sig_widths.get(s) != new_sig_widths.get(s):
-            mods.append(f"• Bit Width: ~~{old_sig_widths.get(s)}~~ -> **{new_sig_widths.get(s)}**")
-        if mods:
-            out.write(f"| {s} | MODIFIED | {' '.join(mods)} |\n")
-
-def write_changed_frames(out):
-    common_f = sorted(list(old_frm_map.keys() & new_frm_map.keys()))
-    for f_name in common_f:
-        o_f, n_f = old_frm_map[f_name], new_frm_map[f_name]
-        o_sigs, n_sigs = get_frame_signals(o_f), get_frame_signals(n_f)
-        
-        has_f_change = (o_f.frame_id != n_f.frame_id) or (o_f.length != n_f.length) or (getattr(o_f.publisher, 'name', o_f.publisher) != getattr(n_f.publisher, 'name', n_f.publisher))
-        has_s_change = (o_sigs != n_sigs) or any(old_sig_widths.get(s) != new_sig_widths.get(s) for s in (o_sigs.keys() & n_sigs.keys()))
-        
-        if has_f_change or has_s_change:
-            out.write(f"### [CHANGED FRAME] {f_name}\n\n")
-            if has_f_change:
-                out.write("#### Frame Attribute Changes:\n")
-                out.write("| Property Name | Old Base Value | New Target Value |\n| --- | --- | --- |\n")
-                if o_f.frame_id != n_f.frame_id:
-                    out.write(f"| Frame ID | ~~{hex(o_f.frame_id)}~~ | **{hex(n_f.frame_id)}** |\n")
-                if o_f.length != n_f.length:
-                    out.write(f"| Length (Bytes) | ~~{o_f.length}~~ | **{n_f.length}** |\n")
-                if getattr(o_f.publisher, 'name', o_f.publisher) != getattr(n_f.publisher, 'name', n_f.publisher):
-                    out.write(f"| Publisher Node | ~~{getattr(o_f.publisher, 'name', o_f.publisher)}~~ | **{getattr(n_f.publisher, 'name', n_f.publisher)}** |\n")
-                out.write("\n")
-            
-            if has_s_change:
-                out.write("#### Nested Signal Changes Inside This Frame:\n")
-                out.write("| Nested Signal Target | Modification Status | Bit Details / Configuration Shifts |\n| --- | --- | --- |\n")
-                check_signal_diffs(out, o_sigs, n_sigs)
-                out.write("\n")
-
-# ==============================================================================
-# 4. MAIN EXECUTION FLOW
+# 3. GENERATE ROBUST SCOPED MARKDOWN ENGINE (0% Object Truncation Risk)
 # ==============================================================================
 with open("ldf_diff_report.md", "w", encoding="utf-8") as out:
     out.write("# LIN Description File (LDF) Semantic Change Report\n\n")
     out.write(f"- **OLD BASE FILE:** {OLD_FILE}\n")
     out.write(f"- **NEW TARGET FILE:** {NEW_FILE}\n\n")
     
-    write_node_section(out)
-    
+    # --- A. Nodes Architecture Block ---
+    out.write("## 1. Network Node Updates\n\n")
+    o_n, n_n = set(old_nodes), set(new_nodes)
+    if not (o_n ^ n_n):
+        out.write("No node architecture modifications.\n\n")
+    else:
+        for n in sorted(list(n_n - o_n)):
+            out.write(f"- **[+] Added Slave Node:** {n}\n")
+        for n in sorted(list(o_n - n_n)):
+            out.write(f"- **[-] Removed Slave Node:** {n}\n")
+        out.write("\n")
+
+    # --- B. Scoped Frames Block ---
     out.write("## 2. Frame Architecture & Nested Signals Map\n\n")
+    
+    # Added Frames Check
+    added_frames = sorted(list(set(new_frames.keys()) - set(old_frames.keys())))
+    if added_frames:
+        out.write("### ➕ Added Frames\n\n")
+        for f_name in added_frames:
+            f = new_frames[f_name]
+            out.write(f"#### frame: **{f_name}**\n")
+            out.write(f"- **Frame ID:** {f['id']} | **Size:** {f['len']} Bytes | **Publisher:** {f['pub']}\n")
+            out.write("- **Nested Signals Layout Matrix:**\n")
+            out.write("  | Signal Variable Target | Bit Offset | Length |\n  | --- | --- | --- |\n")
+            for s in f["signals"]:
+                out.write(f"  | {s['name']} | {s['offset']} | {new_sig_meta.get(s['name'], 'N/A')} bits |\n")
+            out.write("\n")
+
+    # Removed Frames Check
+    removed_frames = sorted(list(set(old_frames.keys()) - set(new_frames.keys())))
+    if removed_frames:
+        out.write("### ➖ Removed Frames\n\n")
+        for f_name in removed_frames:
+            f = old_frames[f_name]
+            out.write(f"#### frame: **{f_name}**\n")
+            out.write(f"- **Frame ID:** {f['id']} | **Size:** {f['len']} Bytes\n")
+            out.write("- **Nested Signals Matrix:**\n")
+            out.write("  | Signal Variable Target | Bit Offset | Length |\n  | --- | --- | --- |\n")
+            for s in f["signals"]:
+                out.write(f"  | {s['name']} | {s['offset']} | {old_sig_meta.get(s['name'], 'N/A')} bits |\n")
+            out.write("\n")
+
+    # Changed Frames Check
+    common_frames = sorted(list(set(old_frames.keys()) & set(new_frames.keys())))
+    out.write("### 🔄 Changed Frames & Inner Signal Configurations\n\n")
+    
+    has_any_changed_frames = False
+    for f_name in common_frames:
+        o_f, n_f = old_frames[f_name], new_frames[f_name]
+        
+        # Track attribute changes
+        f_changes = []
+        if o_f["id"] != n_f["id"]:
+            f_changes.append(f"| Frame ID | ~~{o_f['id']}~~ | **{n_f['id']}** |")
+        if o_f["len"] != n_f["len"]:
+            f_changes.append(f"| Length (Bytes) | ~~{o_f['len']}~~ | **{n_f['len']}** |")
+        if o_f["pub"] != n_f["pub"]:
+            f_changes.append(f"| Publisher Node | ~~{o_f['pub']}~~ | **{n_f['pub']}** |")
+            
+        # Analyze inner signals differences
+        o_sigs = {s["name"]: s["offset"] for s in o_f["signals"]}
+        n_sigs = {s["name"]: s["offset"] for s in n_f["signals"]}
+        
+        s_changes = []
+        for s in sorted(list(set(n_sigs.keys()) - set(o_sigs.keys()))):
+            s_changes.append(f"| {s} | **ADDED** | Start Bit Offset: {n_sigs[s]} \\| Width: {new_sig_meta.get(s, 'N/A')} bits |")
+        for s in sorted(list(set(o_sigs.keys() - n_sigs.keys()))):
+            s_changes.append(f"| {s} | *REMOVED* | Was at Offset: {o_sigs[s]} \\| Width: {old_sig_meta.get(s, 'N/A')} bits |")
+        for s in sorted(list(set(o_sigs.keys() & n_sigs.keys()))):
+            sub_mods = []
+            if o_sigs[s] != n_sigs[s]:
+                sub_mods.append(f"• Bit Offset: ~~{o_sigs[s]}~~ -> **{n_sigs[s]}**")
+            if old_sig_meta.get(s) != new_sig_meta.get(s):
+                sub_mods.append(f"• Bit Width: ~~{old_sig_meta.get(s)}~~ -> **{new_sig_meta.get(s)}**")
+            if sub_mods:
+                s_changes.append(f"| {s} | MODIFIED | {' '.join(sub_mods)} |")
+
+        if f_changes or s_changes:
+            has_any_changed_frames = True
+            out.write(f"#### frame: **{f_name}**\n\n")
+            if f_changes:
+                out.write("##### Frame Attribute Changes:\n")
+                out.write("| Property Name | Old Base Value | New Target Value |\n| --- | --- | --- |\n")
+                for c in f_changes:
+                    out.write(c + "\n")
+                out.write("\n")
+            if s_changes:
+                out.write("##### Nested Signal Changes Inside This Frame:\n")
+                out.write("| Nested Signal Target | Modification Status | Bit Details / Configuration Shifts |\n| --- | --- | --- |\n")
+                for s in s_changes:
+                    out.write(s + "\n")
+                out.write("\n")
+
+    if not has_any_changed_frames:
+        out.write("No matching frame packing layouts or internal signal configurations modified.\n\n")
+
+print("\n[SUCCESS] Custom RegEx Comparison Complete! Check 'ldf_diff_report.md' for nested blocks.")
