@@ -1,0 +1,437 @@
+/*
+Ford Motor Company, LIN Description File (.ldf)
+Date Created:  14-Apr-2026, by: ncacador
+Date Revised:  14-Jul-2026, by: ncacador
+Network:  USP_CIM_1
+Configuration:
+NAD = 0x60, LIN Upfitter Switch (LIN), Version = 100 14-Jul-2026
+*/
+/* ********************************************************************* */
+/*                                                                       */
+/*  Change Log:    14-Jul-2026                                           */
+/*                                                                       */
+/*  R000 Draft 20260414 v0.0                                             */
+/*  R001 Draft 20260610 v0.1                                             */
+/*  R001 Draft 20260722 v1.0.0                                           */
+/*                                                                       */
+/*                                                                       */
+/*  CIM_Spare7Bits                                                       */
+/*  USP_Spare2Bits                                                       */
+/*  USP_Spare1Byte                                                       */
+/* ***********************************************************************/
+
+LIN_description_file;
+LIN_protocol_version = "J2602_1_1.0";
+LIN_language_version = "J2602_3_1.0";
+LIN_speed = 10.417 kbps;
+
+Nodes {
+  Master: CIM_1, 10 ms, 0.5 ms, 40 bits, 20 %;
+  Slaves: USP_1 ;
+}
+
+Signals {
+  CIM_SW1_LED_Rq: 3, 0, CIM_1, USP_1 ;
+  CIM_SW2_LED_Rq: 3, 0, CIM_1, USP_1 ;
+  CIM_SW3_LED_Rq: 3, 0, CIM_1, USP_1 ;
+  CIM_SW4_LED_Rq: 3, 0, CIM_1, USP_1 ;
+  CIM_SW5_LED_Rq: 3, 0, CIM_1, USP_1 ;
+  CIM_SW6_LED_Rq: 3, 0, CIM_1, USP_1 ;
+  CIM_FET1_Rq: 1, 0, CIM_1, USP_1 ;
+  CIM_FET2_Rq: 1, 0, CIM_1, USP_1 ;
+  CIM_FET3_Rq: 1, 0, CIM_1, USP_1 ;
+  CIM_FET4_Rq: 1, 0, CIM_1, USP_1 ;
+  CIM_FET5_Rq: 1, 0, CIM_1, USP_1 ;
+  CIM_FET6_Rq: 1, 0, CIM_1, USP_1 ;
+  CIM_FET7_Rq: 1, 0, CIM_1, USP_1 ;
+  CIM_Reserved_7bit: 7, 0, CIM_1, USP_1 ;
+  USP1_SW1A_Switch_State: 2, 0, USP_1, CIM_1 ;
+  USP1_SW1B_Switch_State: 2, 0, USP_1, CIM_1 ;
+  USP1_SW2_Switch_State: 2, 0, USP_1, CIM_1 ;
+  USP1_SW3_Switch_State: 2, 0, USP_1, CIM_1 ;
+  USP1_SW4_Switch_State: 2, 0, USP_1, CIM_1 ;
+  USP1_SW5_Switch_State: 2, 0, USP_1, CIM_1 ;
+  USP1_SW6_Switch_State: 2, 0, USP_1, CIM_1 ;
+  USP1_FET1_State: 2, 0, USP_1, CIM_1 ;
+  USP1_FET2_State: 2, 0, USP_1, CIM_1 ;
+  USP1_FET3_State: 2, 0, USP_1, CIM_1 ;
+  USP1_FET4_State: 2, 0, USP_1, CIM_1 ;
+  USP1_FET5_State: 2, 0, USP_1, CIM_1 ;
+  USP1_FET6_State: 2, 0, USP_1, CIM_1 ;
+  USP1_FET7_State: 2, 0, USP_1, CIM_1 ;
+  USP1_SW1_LED_State: 3, 0, USP_1, CIM_1 ;
+  USP1_SW2_LED_State: 3, 0, USP_1, CIM_1 ;
+  USP1_SW3_LED_State: 3, 0, USP_1, CIM_1 ;
+  USP1_SW4_LED_State: 3, 0, USP_1, CIM_1 ;
+  USP1_SW5_LED_State: 3, 0, USP_1, CIM_1 ;
+  USP1_SW6_LED_State: 3, 0, USP_1, CIM_1 ;
+  USP1_Reserved1_2bits: 2, 0, USP_1, CIM_1 ;
+  USP1_Reserved2_8bits: 8, 0, USP_1, CIM_1 ;
+  USP1_LINStatus: 3, 0, USP_1, CIM_1 ;
+  USP1_APINFO_0: 1, 0, USP_1, CIM_1 ;
+  USP1_APINFO_1: 1, 0, USP_1, CIM_1 ;
+  USP1_APINFO_2: 1, 0, USP_1, CIM_1 ;
+  USP1_APINFO_3: 1, 0, USP_1, CIM_1 ;
+  USP1_APINFO_4: 1, 0, USP_1, CIM_1 ;
+  USP1PartNumIndex: 8, 0, USP_1, CIM_1 ;
+  USP1PartNumData0: 8, 0, USP_1, CIM_1 ;
+  USP1PartNumData1: 8, 0, USP_1, CIM_1 ;
+  USP1PartNumData2: 8, 0, USP_1, CIM_1 ;
+  USP1PartNumData3: 8, 0, USP_1, CIM_1 ;
+  USP1PartNumData4: 8, 0, USP_1, CIM_1 ;
+  USP1PartNumData5: 8, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit00: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit01: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit02: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit03: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit04: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit05: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit06: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit07: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit08: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit09: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit10: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit11: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit12: 4, 0, USP_1, CIM_1 ;
+  USP1SrNrDigit13: 4, 0, USP_1, CIM_1 ;
+  LIN_Dimming_Level: 8, 0, CIM_1, USP_1 ;
+  LIN_Litval: 8, 0, CIM_1, USP_1 ;
+  LIN_Backlit_LED_Status: 4, 0, CIM_1 ;
+  LIN_Day_Night_Status: 2, 0, CIM_1 ;
+  LIN_Ignition_Status: 4, 0, CIM_1 ;
+}
+
+Diagnostic_signals {
+  MasterReqB0: 8, 0 ;
+  MasterReqB1: 8, 0 ;
+  MasterReqB2: 8, 0 ;
+  MasterReqB3: 8, 0 ;
+  MasterReqB4: 8, 0 ;
+  MasterReqB5: 8, 0 ;
+  MasterReqB6: 8, 0 ;
+  MasterReqB7: 8, 0 ;
+  SlaveRespB0: 8, 0 ;
+  SlaveRespB1: 8, 0 ;
+  SlaveRespB2: 8, 0 ;
+  SlaveRespB3: 8, 0 ;
+  SlaveRespB4: 8, 0 ;
+  SlaveRespB5: 8, 0 ;
+  SlaveRespB6: 8, 0 ;
+  SlaveRespB7: 8, 0 ;
+}
+
+
+
+Frames {
+  CIM_1: 1, CIM_1, 6 {
+    CIM_SW1_LED_Rq, 0 ;
+    CIM_SW2_LED_Rq, 3 ;
+    CIM_SW3_LED_Rq, 6 ;
+    CIM_SW4_LED_Rq, 9 ;
+    CIM_SW5_LED_Rq, 12 ;
+    CIM_SW6_LED_Rq, 15 ;
+    CIM_FET1_Rq, 18 ;
+    CIM_FET2_Rq, 19 ;
+    CIM_FET3_Rq, 20 ;
+    CIM_FET4_Rq, 21 ;
+    CIM_FET5_Rq, 22 ;
+    CIM_FET6_Rq, 23 ;
+    CIM_FET7_Rq, 24 ;
+    LIN_Dimming_Level, 25 ;
+    LIN_Litval, 33 ;
+    CIM_Reserved_7bit, 41 ;
+  }
+  USP_1: 0, USP_1, 8 {
+    USP1_APINFO_0, 0 ;
+    USP1_APINFO_1, 1 ;
+    USP1_APINFO_2, 2 ;
+    USP1_APINFO_3, 3 ;
+    USP1_APINFO_4, 4 ;
+    USP1_LINStatus, 5 ;
+    USP1_SW1A_Switch_State, 8 ;
+    USP1_SW1B_Switch_State, 10 ;
+    USP1_SW2_Switch_State, 12 ;
+    USP1_SW3_Switch_State, 14 ;
+    USP1_SW4_Switch_State, 16 ;
+    USP1_SW5_Switch_State, 18 ;
+    USP1_SW6_Switch_State, 20 ;
+    USP1_FET1_State, 22 ;
+    USP1_FET2_State, 24 ;
+    USP1_FET3_State, 26 ;
+    USP1_FET4_State, 28 ;
+    USP1_FET5_State, 30 ;
+    USP1_FET6_State, 32 ;
+    USP1_FET7_State, 34 ;
+    USP1_SW1_LED_State, 36 ;
+    USP1_SW2_LED_State, 39 ;
+    USP1_SW3_LED_State, 42 ;
+    USP1_SW4_LED_State, 45 ;
+    USP1_SW5_LED_State, 48 ;
+    USP1_SW6_LED_State, 51 ;
+    USP1_Reserved1_2bits, 54 ;
+    USP1_Reserved2_8bits, 56 ;
+  }
+  USP1PartNum: 6, USP_1, 8 {
+    USP1_APINFO_0, 0 ;
+    USP1_APINFO_1, 1 ;
+    USP1_APINFO_2, 2 ;
+    USP1_APINFO_3, 3 ;
+    USP1_APINFO_4, 4 ;
+    USP1_LINStatus, 5 ;
+    USP1PartNumIndex, 8 ;
+    USP1PartNumData0, 16 ;
+    USP1PartNumData1, 24 ;
+    USP1PartNumData2, 32 ;
+    USP1PartNumData3, 40 ;
+    USP1PartNumData4, 48 ;
+    USP1PartNumData5, 56 ;
+  }
+  USP1SerialNum: 7, USP_1, 8 {
+    USP1_APINFO_0, 0 ;
+    USP1_APINFO_1, 1 ;
+    USP1_APINFO_2, 2 ;
+    USP1_APINFO_3, 3 ;
+    USP1_APINFO_4, 4 ;
+    USP1_LINStatus, 5 ;
+    USP1SrNrDigit00, 8 ;
+    USP1SrNrDigit01, 12 ;
+    USP1SrNrDigit02, 16 ;
+    USP1SrNrDigit03, 20 ;
+    USP1SrNrDigit04, 24 ;
+    USP1SrNrDigit05, 28 ;
+    USP1SrNrDigit06, 32 ;
+    USP1SrNrDigit07, 36 ;
+    USP1SrNrDigit08, 40 ;
+    USP1SrNrDigit09, 44 ;
+    USP1SrNrDigit10, 48 ;
+    USP1SrNrDigit11, 52 ;
+    USP1SrNrDigit12, 56 ;
+    USP1SrNrDigit13, 60 ;
+  }
+}
+
+
+
+Diagnostic_frames {
+  MasterReq: 0x3c {
+    MasterReqB0, 0 ;
+    MasterReqB1, 8 ;
+    MasterReqB2, 16 ;
+    MasterReqB3, 24 ;
+    MasterReqB4, 32 ;
+    MasterReqB5, 40 ;
+    MasterReqB6, 48 ;
+    MasterReqB7, 56 ;
+  }
+  SlaveResp: 0x3d {
+    SlaveRespB0, 0 ;
+    SlaveRespB1, 8 ;
+    SlaveRespB2, 16 ;
+    SlaveRespB3, 24 ;
+    SlaveRespB4, 32 ;
+    SlaveRespB5, 40 ;
+    SlaveRespB6, 48 ;
+    SlaveRespB7, 56 ;
+  }
+}
+
+Node_attributes {
+  USP_1{
+    LIN_protocol = "J2602_1_1.0" ;
+    configured_NAD = 0x60 ;
+    product_id = 0x56, 0x7FFE, 1 ;
+    response_error = USP1_LINStatus ;
+    P2_min = 0 ms ;
+    ST_min = 0 ms ;
+    configurable_frames {
+      USP_1 = 0x0 ;
+      USP1PartNum = 0x6 ;
+      USP1SerialNum = 0x7 ;
+      CIM_1 = 0x1 ;
+    }
+    response_tolerance = 20 % ;
+    wakeup_time = 100 ms;
+    poweron_time = 100 ms;
+  }
+}
+
+Schedule_tables {
+ MAIN {
+    CIM_1 delay 20 ms ;
+    USP_1 delay 20 ms ;
+  }
+ Master_Req {
+    MasterReq delay 20 ms ;
+  }
+ Slave_Resp {
+    SlaveResp delay 20 ms ;
+  }
+ USP1_LINPartReport {
+    USP1PartNum delay 20 ms ;
+    USP1SerialNum delay 20 ms ;
+  }
+}
+
+
+Signal_encoding_types {
+  CIM_FET_Rq_Encoding {
+    logical_value, 0, "Inactive" ;
+    logical_value, 1, "Active" ;
+  }
+  CIM_LED_Status_EncodingType {
+    logical_value, 0, "Off" ;
+    logical_value, 1, "White" ;
+    logical_value, 2, "Amber" ;
+    logical_value, 3, "Red" ;
+    logical_value, 4, "Blue" ;
+  }
+  LINStatusByte_Encoding {
+    logical_value, 0, "No detected fault" ;
+    logical_value, 1, "Reset" ;
+    logical_value, 2, "Reserved" ;
+    logical_value, 3, "Reserved" ;
+    logical_value, 4, "Data Error" ;
+    logical_value, 5, "Checksum Error" ;
+    logical_value, 6, "Byte Field Framing Error" ;
+    logical_value, 7, "ID Parity Error" ;
+  }
+  LIN_Backlit_LED_Status_Encoding {
+    physical_value, 0, 15, 1, 0 ;
+    logical_value, 0, "Off" ;
+    logical_value, 1, "Night_1" ;
+    logical_value, 2, "Night_2" ;
+    logical_value, 3, "Night_3" ;
+    logical_value, 4, "Night_4" ;
+    logical_value, 5, "Night_5" ;
+    logical_value, 6, "Night_6" ;
+    logical_value, 7, "Night_7" ;
+    logical_value, 8, "Night_8" ;
+    logical_value, 9, "Night_9" ;
+    logical_value, 10, "Night_10" ;
+    logical_value, 11, "Night_11" ;
+    logical_value, 12, "Night_12" ;
+    logical_value, 13, "Unused1" ;
+    logical_value, 14, "Unused2" ;
+    logical_value, 15, "Unused3" ;
+  }
+  LIN_Day_Night_Status_Encoding {
+    logical_value, 0, "Null" ;
+    logical_value, 1, "Day" ;
+    logical_value, 2, "Night" ;
+    logical_value, 3, "NotUsed" ;
+  }
+  LIN_Dimming_EncodingType {
+    physical_value, 0, 255, 1, 0 ;
+    logical_value, 0, "Off" ;
+    logical_value, 1, "Night_1" ;
+    logical_value, 2, "Night_2" ;
+    logical_value, 3, "Night_3" ;
+    logical_value, 4, "Night_4" ;
+    logical_value, 5, "Night_5" ;
+    logical_value, 6, "Night_6" ;
+    logical_value, 7, "Night_7" ;
+    logical_value, 8, "Night_8" ;
+    logical_value, 9, "Night_9" ;
+    logical_value, 10, "Night_10" ;
+    logical_value, 11, "Night_11" ;
+    logical_value, 12, "Night_12" ;
+    logical_value, 13, "Day_1" ;
+    logical_value, 14, "Day_2" ;
+    logical_value, 15, "Day_3" ;
+    logical_value, 16, "Day_4" ;
+    logical_value, 17, "Day_5" ;
+    logical_value, 18, "Day_6" ;
+    logical_value, 254, "Unknown" ;
+    logical_value, 255, "Invalid" ;
+  }
+  LIN_Litval_EncodingType {
+    physical_value, 0, 255, 1, 0 ;
+    logical_value, 0, "Night" ;
+    logical_value, 1, "Twilight_1" ;
+    logical_value, 2, "Twilight_2" ;
+    logical_value, 3, "Twilight_3" ;
+    logical_value, 4, "Twilight_4" ;
+    logical_value, 5, "Day" ;
+    logical_value, 254, "Unknown" ;
+    logical_value, 255, "Invalid" ;
+  }
+  LIN_VehIgn_EncodingType {
+    physical_value, 0, 15, 1, 0 ;
+    logical_value, 0, "Unknown" ;
+    logical_value, 1, "Off" ;
+    logical_value, 2, "Accessory" ;
+    logical_value, 4, "Run" ;
+    logical_value, 8, "Start" ;
+    logical_value, 15, "Invalid" ;
+  }
+  USP1_APINFO_0_Encoding {
+    logical_value, 0, "No Button Error" ;
+    logical_value, 1, "Button Error Present" ;
+  }
+  USP1_APINFO_1_Encoding {
+    logical_value, 0, "No Error" ;
+    logical_value, 1, "FET Error Present" ;
+  }
+  USP1_APINFO_2_Encoding {
+    logical_value, 0, "No LED Error" ;
+    logical_value, 1, "LED Error Present" ;
+  }
+  USP1_APINFO_3_Encoding {
+    logical_value, 0, "No Voltage Error" ;
+    logical_value, 1, "Voltage Error Present" ;
+  }
+  USP1_APINFO_4_Encoding {
+    logical_value, 0, "No Configuration Need" ;
+    logical_value, 1, "Configuration Required" ;
+  }
+  USP1_Button_Status_EncodingType {
+    logical_value, 0, "Unpressed" ;
+    logical_value, 1, "Pressed" ;
+    logical_value, 2, "InternalFault" ;
+    logical_value, 3, "Reserved" ;
+  }
+  USP1_FET_State_EncodingType {
+    logical_value, 0, "Inactive" ;
+    logical_value, 1, "Active" ;
+    logical_value, 2, "InternalFault" ;
+    logical_value, 3, "Reserved" ;
+  }
+  USP1_LED_Status_EncodingType {
+    logical_value, 0, "Off" ;
+    logical_value, 1, "White" ;
+    logical_value, 2, "Amber" ;
+    logical_value, 3, "Red" ;
+    logical_value, 4, "Blue" ;
+  }
+  FETs_State_EncodingType {
+    logical_value, 0, "Inactive" ;
+    logical_value, 1, "Active" ;
+    logical_value, 2, "InternalFault" ;
+    logical_value, 3, "NotUsed" ;
+  }
+  LIN_Parklamp_Status_Encoding {
+    logical_value, 0, "Off" ;
+    logical_value, 1, "On" ;
+    logical_value, 2, "Unknown" ;
+    logical_value, 3, "Invalid" ;
+  }
+}
+
+Signal_representation {
+  CIM_FET_Rq_Encoding: CIM_FET1_Rq, CIM_FET2_Rq, CIM_FET3_Rq, CIM_FET4_Rq, CIM_FET5_Rq, CIM_FET6_Rq, CIM_FET7_Rq ;
+  CIM_LED_Status_EncodingType: CIM_SW1_LED_Rq, CIM_SW2_LED_Rq, CIM_SW3_LED_Rq, CIM_SW4_LED_Rq, CIM_SW5_LED_Rq, CIM_SW6_LED_Rq ;
+  LINStatusByte_Encoding: USP1_LINStatus ;
+  LIN_Backlit_LED_Status_Encoding: LIN_Backlit_LED_Status ;
+  LIN_Day_Night_Status_Encoding: LIN_Day_Night_Status ;
+  LIN_Dimming_EncodingType: LIN_Dimming_Level ;
+  LIN_Litval_EncodingType: LIN_Litval ;
+  LIN_VehIgn_EncodingType: LIN_Ignition_Status ;
+  USP1_APINFO_0_Encoding: USP1_APINFO_0 ;
+  USP1_APINFO_1_Encoding: USP1_APINFO_1 ;
+  USP1_APINFO_2_Encoding: USP1_APINFO_2 ;
+  USP1_APINFO_3_Encoding: USP1_APINFO_3 ;
+  USP1_APINFO_4_Encoding: USP1_APINFO_4 ;
+  USP1_Button_Status_EncodingType: USP1_SW1A_Switch_State, USP1_SW1B_Switch_State, USP1_SW2_Switch_State, USP1_SW3_Switch_State, USP1_SW4_Switch_State, USP1_SW5_Switch_State, USP1_SW6_Switch_State ;
+  USP1_FET_State_EncodingType: USP1_FET1_State, USP1_FET2_State, USP1_FET3_State, USP1_FET4_State, USP1_FET5_State, USP1_FET6_State, USP1_FET7_State ;
+  USP1_LED_Status_EncodingType: USP1_SW1_LED_State, USP1_SW2_LED_State, USP1_SW3_LED_State, USP1_SW4_LED_State, USP1_SW5_LED_State, USP1_SW6_LED_State ;
+}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LDF Structured Database Report</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 30px; color: #24292f; background-color: #f6f8fa; }
+        .container { max-width: 1100px; margin: 0 auto; background: #ffffff; padding: 40px; border: 1px solid #d0d7de; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
+        .header-box { border-bottom: 2px solid #2da44e; padding-bottom: 15px; margin-bottom: 30px; }
+        h1 { font-size: 26px; margin: 0; color: #1f2328; }
+        .file-meta { font-size: 13px; color: #57606a; margin-top: 8px; font-family: monospace; }
+        h2 { font-size: 18px; margin-top: 30px; padding-bottom: 6px; border-bottom: 1px solid #d0d7de; color: #0969da; }
+        h3 { font-size: 14px; margin-top: 20px; color: #24292f; }
+        .card { background: #f8f9fa; border: 1px solid #e1e4e8; border-radius: 6px; padding: 15px; margin-bottom: 15px; }
+        .entity-title { font-weight: 600; font-size: 15px; color: #24292f; margin-bottom: 8px; font-family: monospace; }
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 13px; }
+        th, td { text-align: left; padding: 8px 12px; border: 1px solid #d0d7de; }
+        th { background-color: #eaeef2; font-weight: 600; color: #57606a; width: 25%; }
+        .added-badge { background-color: #dafbe1; color: #1a7f37; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        .removed-badge { background-color: #ffebe9; color: #cf222e; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        .changed-text { color: #953800; font-weight: bold; }
+        ul { list-style: none; padding-left: 0; margin: 0; }
+        li { padding: 6px 12px; margin-bottom: 4px; border-radius: 4px; font-family: monospace; font-size: 13px; }
+        .bg-add { background-color: #dafbe1; color: #1a7f37; border-left: 4px solid #2da44e; }
+        .bg-rem { background-color: #ffebe9; color: #cf222e; border-left: 4px solid #cf222e; }
+        .empty { color: #6e7781; font-style: italic; font-size: 13px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-box">
+            <h1>LIN Description File (LDF) Matrix Change Report</h1>
+            <div class="file-meta">
+                <strong>OLD FILE:</strong> {{ old_meta.name }} ({{ old_meta.version }})<br>
+                <strong>NEW FILE:</strong> {{ new_meta.name }} ({{ new_meta.version }})
+            </div>
+        </div>
+
+        <h2>1. Network Node Architecture Updates</h2>
+        {% if nodes.added or nodes.removed %}
+            <ul>
+                {% for node in nodes.added %}
+                    <li class="bg-add">[+] Added Slave Node Name: <strong>{{ node }}</strong></li>
+                {% endfor %}
+                {% for node in nodes.removed %}
+                    <li class="bg-rem">[-] Removed Slave Node Name: <strong>{{ node }}</strong></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty">No changes found in network cluster architecture nodes.</div>
+        {% endif %}
+
+        <h2>2. Message & Frame Property Modifications</h2>
+        {% if frames.added %}
+            <h3>Added Frames</h3>
+            {% for frame in frames.added %}
+                <div class="card" style="border-left: 4px solid #2da44e;">
+                    <span class="added-badge">ADDED</span> frame: {{ frame.name }}</div>
+                    <table>
+                        <tr><th>Frame ID</th><td>{{ frame.id }}</td></tr>
+                        <tr><th>Length (Bytes)</th><td>{{ frame.len }}</td></tr>
+                        <tr><th>Publisher Node</th><td>{{ frame.pub }}</td></tr>
+                    </table>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if frames.removed %}
+            <h3>Removed Frames</h3>
+            {% for frame in frames.removed %}
+                <div class="card" style="border-left: 4px solid #cf222e;">
+                    <span class="removed-badge">REMOVED</span> frame: {{ frame.name }}</div>
+                    <table>
+                        <tr><th>Frame ID</th><td>{{ frame.id }}</td></tr>
+                        <tr><th>Length (Bytes)</th><td>{{ frame.len }}</td></tr>
+                    </table>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if frames.changed %}
+            <h3>Changed Frames</h3>
+            {% for frame in frames.changed %}
+                <div class="card" style="border-left: 4px solid #0969da;">
+                    <span class="changed-text">CHANGED</span> message: <strong>{{ frame.name }}</strong></div>
+                    <table>
+                        <thead>
+                            <tr style="background:#eaeef2;">
+                                <th>Property Name</th>
+                                <th>Old Base Value</th>
+                                <th>New Target Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for change in frame.changes %}
+                            <tr>
+                                <td><strong>{{ change.attr }}</strong></td>
+                                <td style="color:#cf222e; text-decoration: line-through;">{{ change.old }}</td>
+                                <td style="color:#1a7f37; font-weight: bold;">{{ change.new }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if not frames.added and not frames.removed and not frames.changed %}
+            <div class="empty">No unconditional frames or packing definitions modified.</div>
+        {% endif %}
+
+        <h2>3. Signal Allocation Matrix Updates</h2>
+        {% if signals.added %}
+            <h3>Added Signals</h3>
+            <ul>
+                {% for sig in signals.added %}
+                    <li class="bg-add">[+] signal: <strong>{{ sig.name }}</strong> (Length: {{ sig.width }} bits, Init: {{ sig.init }})</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if signals.removed %}
+            <h3>Removed Signals</h3>
+            <ul>
+                {% for sig in signals.removed %}
+                    <li class="bg-rem">[-] signal: <strong>{{ sig.name }}</strong> (Length: {{ sig.width }} bits)</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if signals.changed %}
+            <h3>Changed Signals</h3>
+            {% for sig in signals.changed %}
+                <div class="card">
+                    signal: <strong>{{ sig.name }}</strong></div>
+                    <table>
+                        <thead>
+                            <tr style="background:#f1f1f1;">
+                                <th>Attribute Field</th>
+                                <th>Old Value</th>
+                                <th>New Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for change in sig.changes %}
+                            <tr>
+                                <td>{{ change.attr }}</td>
+                                <td style="color:red;">{{ change.old }}</td>
+                                <td style="color:green; font-weight:bold;">{{ change.new }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if not signals.added and not signals.removed and not signals.changed %}
+            <div class="empty">No matrix variables or encoding value profiles modified.</div>
+        {% endif %}
+    </div>
+</body>
+</html>
