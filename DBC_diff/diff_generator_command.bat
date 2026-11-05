@@ -1,0 +1,1 @@
+python dbcdiff.py -f .\<add old dbc name.dbc> -t .\add new dbc name.dbc -r html,json
