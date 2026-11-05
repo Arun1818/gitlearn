@@ -1,0 +1,13 @@
+# ==============================================================================
+# PREREQUISITES AND SYSTEM DEPENDENCIES - DBC DIFFERENCE GENERATOR
+# ==============================================================================
+# This file tracks the exact system requirements, Python version baselines,
+# and external libraries required to execute the DBC diff framework.
+
+# Python Runtime Baseline
+# Recommended: Python 3.10 or higher (Supports strict pattern matches and type tracking)
+# Validated Environment: Win10/Win11 x64, macOS, Linux
+
+# External Engineering Libraries
+cantools==39.4.0     # Comprehensive CAN/CAN FD network database (.dbc) data parser
+click==8.1.7        # Command-line interface creation framework for unified option parsing
